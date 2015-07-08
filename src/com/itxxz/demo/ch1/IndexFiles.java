@@ -30,11 +30,11 @@ public class IndexFiles {
 	 * @author IT学习者-螃蟹
 	 * @param args
 	 */
-	public static void main1(String[] args) {
+	public static void main2(String[] args) {
 		boolean create = false;
 		// 指定需要检索的文件
 		// String docsPath = "/searchKey/itxxz.txt";
-		String docsPath = "F://test//itxxz5.txt";
+		String docsPath = "F://test";
 		final File docDir = new File(docsPath);
 		Date start = new Date();
 		CommenUtils.printTime("开始时间");
@@ -46,11 +46,8 @@ public class IndexFiles {
 			IndexWriterConfig iwc = new IndexWriterConfig(
 					Version.LUCENE_4_10_2, analyzer);
 			if (create) {
-				// Create a new index in the directory, removing any
-				// previously indexed documents:
 				iwc.setOpenMode(OpenMode.CREATE);
 			} else {
-				// Add new documents to an existing index:
 				iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			}
 			IndexWriter writer = new IndexWriter(dir, iwc);
@@ -70,7 +67,8 @@ public class IndexFiles {
 		// 指定需要检索的文件
 		try {
 			System.out.println("索引路径【itxxz】...");
-			String docsPath = "F://test//itxxz7.txt";
+			//String docsPath = "F://test//itxxz7.txt";
+			String docsPath = "F://test";
 			final File docDir = new File(docsPath);
 			Directory dir = FSDirectory.open(new File("itxxz"));
 			Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_4_10_2);

@@ -1,8 +1,12 @@
 package com.itxxz.servlet;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -54,11 +58,12 @@ public class ItxxzServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String filePath = "F://test//itxxz";
+	//filePath：E:\开发软件\Eclipse\JavaDevp_Eclipse_final\j2eclipse_luna\dataSource\itxxz
+	private static String filePath;
 	
 	private final String suffix = ".txt";
 	
-	private final String INDEX = "itxxz";
+	private final String INDEX = "dataIndex";
 	
 	private String[] descs = new String[13];
 	
@@ -87,13 +92,24 @@ public class ItxxzServlet extends HttpServlet {
 		
 	}
 	
+	static {
+		// 获取当前工程的绝对路径
+		File directory = new File("");
+		filePath = directory.getAbsolutePath()+"//itxxz";
+		System.out.println("filePath="+filePath);
+	}
+	
 	/**
 	 * 数据初始化
 	 */
 	@Override
 	public void init() throws ServletException {
 		System.out.println("-----init-------");
+		File directory = new File("");
+		filePath = directory.getAbsolutePath()+"\\dataSource\\itxxz";
+		System.out.println("文件创建的路径："+filePath);
 		initData();
+		writeFile();
 		createIndex();
 		
 	}
@@ -153,7 +169,7 @@ public class ItxxzServlet extends HttpServlet {
 			iwConfig.setOpenMode(OpenMode.CREATE);
 			iwriter = new IndexWriter(directory, iwConfig);
 			FileInputStream fis = null;
-			for(int i=0;i<13;i++){
+			for(int i=0;i<descs.length;i++){
 				fis = new FileInputStream(new File(filePath+i+suffix));
 				
 				// 写入索引
@@ -237,5 +253,100 @@ public class ItxxzServlet extends HttpServlet {
 		descs[12]="直到有一天，一只海鸥告诉我，我真羡慕你，你有可以回到的大海，而我们永远也无法拥抱天空。";
 	}
 	
-
+	/**
+	 * 将指定的内容写入到指定的文件中去
+	 */
+	public void writeFile() {
+		for (int i = 0; i < descs.length; i++) {
+			File file = new File(filePath+i+suffix);
+			createFile(file.toString());
+			
+			//先将文件的内容清空
+			try {
+				FileWriter fw = new FileWriter(file);//FileWriter fw = new FileWriter(file,true),如果加了true则会一直往后添加
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write("");
+				bw.flush();
+				bw.close();
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//清空文件以后，再写入指定内容
+			try {
+				FileWriter fw = new FileWriter(file);
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(descs[i]);
+				bw.flush();
+				bw.close();
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//将每次写入文件的内容打印
+			try {
+				FileReader fr = new FileReader(file);
+				BufferedReader bReader = new BufferedReader(fr);
+				String string = bReader.readLine();
+				System.out.println(i+"."+string);
+				bReader.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 指定路径下创建指定文件
+	 * @param destFileName
+	 * @return
+	 */
+	public boolean createFile(String destFileName) {
+        File file = new File(destFileName);
+        if(file.exists()) {
+            System.out.println("创建单个文件" + destFileName + "失败，目标文件已存在！");
+            return false;
+        }
+        if (destFileName.endsWith(File.separator)) {
+            System.out.println("创建单个文件" + destFileName + "失败，目标文件不能为目录！");
+            return false;
+        }
+        //判断目标文件所在的目录是否存在
+        if(!file.getParentFile().exists()) {
+            //如果目标文件所在的目录不存在，则创建父目录
+            System.out.println("目标文件所在目录不存在，准备创建它！");
+            if(!file.getParentFile().mkdirs()) {
+                System.out.println("创建目标文件所在目录失败！");
+                return false;
+            }
+        }
+        //创建目标文件
+        try {
+            if (file.createNewFile()) {
+                System.out.println("创建单个文件" + destFileName + "成功！");
+                return true;
+            } else {
+                System.out.println("创建单个文件" + destFileName + "失败！");
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("创建单个文件" + destFileName + "失败！" + e.getMessage());
+            return false;
+        }
+    }
+	
+	/**
+	 * filePath=F:\Study\AliBaba\lucene-itxxz//itxxz
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		ItxxzServlet servlet = new ItxxzServlet();
+		servlet.initData();//初始化
+		servlet.writeFile();
+	}
 }

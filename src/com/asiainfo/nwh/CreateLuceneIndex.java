@@ -32,7 +32,7 @@ public class CreateLuceneIndex {
 					"-index", 
 					"G:\\myProject\\Lucene\\index",
 					"-docs", 
-					"G:\\myProject\\Lucene\\lucene-4.10.2\\docs" };
+					"G:\\myProject\\Lucene\\13801.txt" };
 		}
 		String indexPath = ""; // 索引文件保存的路径
 		String docsPath = null; // 资源文件所在目录
@@ -64,8 +64,9 @@ public class CreateLuceneIndex {
 		Date start = new Date();
 		try {
 			System.out.println("建立索引文件到该目录 '" + indexPath + "'...");
-
+			//MMapDirectory@G:\myProject\Lucene\index lockFactory=NativeFSLockFactory@G:\myProject\Lucene\index
 			Directory dir = FSDirectory.open(new File(indexPath));
+			// 创建解析器
 			Analyzer analyzer = new StandardAnalyzer();
 			IndexWriterConfig iwc = new IndexWriterConfig(
 					Version.LUCENE_4_10_2, analyzer);
@@ -123,6 +124,7 @@ public class CreateLuceneIndex {
 				// 可以把一个 Document 对象想象成数据库中的一个记录，而每个 Field 对象就是记录的一个字段。
 				Document doc = new Document();
 				// Field 对象是用来描述一个文档的某个属性的，比如一封电子邮件的标题和内容可以用两个 Field 对象分别描述。
+				//stored,indexed,omitNorms,indexOptions=DOCS_ONLY<path:G:\myProject\Lucene\13801.txt>	
 				Field pathField = new StringField("path", file.getPath(),
 						Field.Store.YES);
 				// pathField指的是资源文件的路径的field

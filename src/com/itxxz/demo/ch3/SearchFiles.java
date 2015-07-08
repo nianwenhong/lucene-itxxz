@@ -42,7 +42,7 @@ public class SearchFiles {
 	 * @throws Exception
 	 */
 
-	public static void main1(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		String text = "welcome come to www.itxxz.com,I'm itxxz";
 		TermQuery query = new TermQuery(new Term("field", "itxxz"));
 		Scorer scorer = new QueryScorer(query);
@@ -57,45 +57,44 @@ public class SearchFiles {
 	}
 
 	public static void main(String[] args) throws Exception {
-
-		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(
-				"highlight")));
-		IndexSearcher searcher = new IndexSearcher(reader);
-		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_4_10_2);
-		QueryParser parser = new QueryParser("notv", analyzer);
-		Query query = parser.parse("million");
-		TopDocs hits = searcher.search(query, 10);
-
-		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter(
-				"<font color='red'>", "</font>");
-		Highlighter highlighter = new Highlighter(htmlFormatter,
-				new QueryScorer(query));
-		for (int i = 0; i < hits.scoreDocs.length; i++) {
-			int id = hits.scoreDocs[i].doc;
-			Document doc = searcher.doc(id);
-			String text = doc.get("notv");
-			TokenStream tokenStream = TokenSources.getAnyTokenStream(
-					searcher.getIndexReader(), id, "notv", analyzer);
-			TextFragment[] frag = highlighter.getBestTextFragments(tokenStream,
-					text, false, 10);
-			for (int j = 0; j < frag.length; j++) {
-				if ((frag[j] != null) && (frag[j].getScore() > 0)) {
-					System.out.println((frag[j].toString()));
-					System.out.println("notv-----end");
-				}
-			}
-			text = doc.get("tv");
-			tokenStream = TokenSources.getAnyTokenStream(
-					searcher.getIndexReader(), hits.scoreDocs[i].doc, "tv",
-					analyzer);
-			frag = highlighter.getBestTextFragments(tokenStream, text, false,
-					10);
-			for (int j = 0; j < frag.length; j++) {
-				if ((frag[j] != null) && (frag[j].getScore() > 0)) {
-					System.out.println((frag[j].toString()));
-					System.out.println("tv-----end");
-				}
-			}
-		}
+		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(  
+	            "highlight")));  
+	    IndexSearcher searcher = new IndexSearcher(reader);  
+	    Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_4_10_2);  
+	    QueryParser parser = new QueryParser("notv", analyzer);  
+	    Query query = parser.parse("million");  
+	    TopDocs hits = searcher.search(query, 10);  
+	  
+	    SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter(  
+	            "<font color='red'>", "</font>");  
+	    Highlighter highlighter = new Highlighter(htmlFormatter,  
+	            new QueryScorer(query));  
+	    for (int i = 0; i < hits.scoreDocs.length; i++) {  
+	        int id = hits.scoreDocs[i].doc;  
+	        Document doc = searcher.doc(id);  
+	        String text = doc.get("notv");  
+	        TokenStream tokenStream = TokenSources.getAnyTokenStream(  
+	                searcher.getIndexReader(), id, "notv", analyzer);  
+	        TextFragment[] frag = highlighter.getBestTextFragments(tokenStream,  
+	                text, false, 10);  
+	        for (int j = 0; j < frag.length; j++) {  
+	            if ((frag[j] != null) && (frag[j].getScore() > 0)) {  
+	                System.out.println((frag[j].toString()));  
+	                System.out.println("notv-----end");  
+	            }  
+	        }  
+	        text = doc.get("tv");  
+	        tokenStream = TokenSources.getAnyTokenStream(  
+	                searcher.getIndexReader(), hits.scoreDocs[i].doc, "tv",  
+	                analyzer);  
+	        frag = highlighter.getBestTextFragments(tokenStream, text, false,  
+	                10);  
+	        for (int j = 0; j < frag.length; j++) {  
+	            if ((frag[j] != null) && (frag[j].getScore() > 0)) {  
+	                System.out.println((frag[j].toString()));  
+	                System.out.println("tv-----end");  
+	            }  
+	        }  
+	    }  
 	}
 }
