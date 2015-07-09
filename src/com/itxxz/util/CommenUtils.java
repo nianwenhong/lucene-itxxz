@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +58,14 @@ public class CommenUtils {
 	private static long pretime = System.currentTimeMillis();
 
 	public static void printTime(String tag) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		if (starttime == 0) {
 			starttime = System.currentTimeMillis();
-			System.out.println("[" + tag + "] start timer:" + starttime);
+			//获取系统当前时间
+			System.out.println("[" + tag + "] start timer:" + df.format(new Date()));
 		} else {
 			long curtime = System.currentTimeMillis();
-			System.out.println("[" + tag + "]当前时间:" + curtime + " 总时间:"
+			System.out.println("[" + tag + "]当前时间:" + df.format(new Date()) + " 总时间:"
 					+ (curtime - starttime) + " 上次间隔:" + (curtime - pretime));
 			pretime = System.currentTimeMillis();
 		}
